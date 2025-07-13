@@ -1,13 +1,12 @@
 package com.sm.journalApp.controllers;
 import com.sm.journalApp.entities.JournalEntry;
 import com.sm.journalApp.services.JournalEntryService;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
 
 
 /*
@@ -35,26 +34,26 @@ public class JournalEntryController {
 3. Also allows external HTTP requests to trigger them
 4. Non-public methods (like private or protected)
    will not be mapped to HTTP endpoints
-*//*
+*/
 
     @GetMapping("/get-all")
     public List<JournalEntry> getAll() {
-        return new ArrayList<>(journalEntries.values());
+        return journalEntryService.getAll();
     }
 
-*/
+
 /*  1. @PathVariable binds URL path data (like /id/5) to method parameter
     2. Lets Spring extract values directly from the URL
     3. Used to make REST ful endpoints cleaner and meaningful
     @PathVariable Long myId
 */
-/*
+
 
     @GetMapping("id/{myId}")
-    public JournalEntry getJournalEntryById(@PathVariable Long myId){
-        return journalEntries.get(myId);
+    public JournalEntry getJournalEntryById(@PathVariable ObjectId myId){
+        return journalEntryService.getById(myId).orElse(null);
     }
-*/
+
 /*
     ✅ Here’s your statement converted into clear key points:
 
@@ -84,22 +83,30 @@ public class JournalEntryController {
 
 
     @PostMapping("/create-post")
-    public boolean createEntry(@RequestBody JournalEntry myEntry){
-        journalEntryService.saveJournalEntry(myEntry);
+    public JournalEntry createEntry(@RequestBody JournalEntry myEntry){
+        myEntry.setDate(LocalDateTime.now());
+        journalEntryService.saveEntry(myEntry);
+        return myEntry;
+    }
+
+    @DeleteMapping("id/{myId}")
+    public boolean deleteJournalEntryById(@PathVariable ObjectId myId){
+        journalEntryService.deleteById(myId);
         return true;
     }
 
-//    @DeleteMapping("id/{myId}")
-//    public JournalEntry deleteJournalEntryById(@PathVariable Long myId){
-//        return journalEntries.remove(myId);
-//    }
-
-//    @PutMapping("id/{myId}")
-//    public JournalEntry updateJournalEntryById(
-//            @PathVariable Long myId,
-//            @RequestBody JournalEntry myEntry){
-//        return journalEntries.put(myId,myEntry);
-//    }
+    @PutMapping("id/{myId}")
+    public JournalEntry updateJournalEntryById(
+            @PathVariable ObjectId myId,
+            @RequestBody JournalEntry newEntry){
+        JournalEntry oldEntry = journalEntryService.getById(myId).orElse(null);
+        if (oldEntry != null){
+            oldEntry.setTitle(newEntry.getTitle() != null && !newEntry.getTitle().isEmpty() ? newEntry.getTitle() : oldEntry.getTitle());
+            oldEntry.setContent(newEntry.getContent() != null && !newEntry.getContent().isEmpty() ? newEntry.getContent() : oldEntry.getContent());
+            journalEntryService.saveEntry(oldEntry); // persist the updated entity
+        }
+        return oldEntry;
+    }
 }
 
 
