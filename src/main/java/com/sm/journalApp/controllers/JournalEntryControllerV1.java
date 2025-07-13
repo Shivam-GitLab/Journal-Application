@@ -1,7 +1,9 @@
+/*
+
 package com.sm.journalApp.controllers;
+
+
 import com.sm.journalApp.entities.JournalEntry;
-import com.sm.journalApp.services.JournalEntryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -9,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+*/
 /*
 ✅ @RestController
 
@@ -22,13 +24,15 @@ import java.util.Map;
 4. ➡️ Auto-registered as a Spring component (like @Component / @Service).
 
 5. ➡️ Ideal for building REST APIs.
-*/
+*//*
 
 @RestController()  // Component + Additional Functionality
-@RequestMapping("/journal") // Add Mapping on Entire Class
-public class JournalEntryController {
-    @Autowired
-    private JournalEntryService journalEntryService;
+@RequestMapping("/_journal") // Add Mapping on Entire Class
+public class JournalEntryControllerV1 {
+    private Map<Long, JournalEntry> journalEntries = new HashMap<>();
+
+
+*/
 /*
 1. Methods inside a controller class should be public
 2. So that Spring Framework can detect and invoke them
@@ -47,8 +51,7 @@ public class JournalEntryController {
     2. Lets Spring extract values directly from the URL
     3. Used to make REST ful endpoints cleaner and meaningful
     @PathVariable Long myId
-*/
-/*
+*//*
 
     @GetMapping("id/{myId}")
     public JournalEntry getJournalEntryById(@PathVariable Long myId){
@@ -67,7 +70,7 @@ public class JournalEntryController {
     Helps in accurate data transmission and reception between client & server.*//*
 
 
- */
+    */
 /*
     ✅ About @RequestBody JournalEntry myEntry (not code):
 
@@ -80,26 +83,25 @@ public class JournalEntryController {
     4. Lets you directly work with a fully populated Java object inside your method.
 
     5. Used mainly in POST, PUT APIs where data is sent in the body.
-    */
-
+    *//*
 
     @PostMapping("/create-post")
     public boolean createEntry(@RequestBody JournalEntry myEntry){
-        journalEntryService.saveJournalEntry(myEntry);
+        journalEntries.put(myEntry.getId(), myEntry);
         return true;
     }
 
-//    @DeleteMapping("id/{myId}")
-//    public JournalEntry deleteJournalEntryById(@PathVariable Long myId){
-//        return journalEntries.remove(myId);
-//    }
+    @DeleteMapping("id/{myId}")
+    public JournalEntry deleteJournalEntryById(@PathVariable Long myId){
+        return journalEntries.remove(myId);
+    }
 
-//    @PutMapping("id/{myId}")
-//    public JournalEntry updateJournalEntryById(
-//            @PathVariable Long myId,
-//            @RequestBody JournalEntry myEntry){
-//        return journalEntries.put(myId,myEntry);
-//    }
+    @PutMapping("id/{myId}")
+    public JournalEntry updateJournalEntryById(
+            @PathVariable Long myId,
+            @RequestBody JournalEntry myEntry){
+        return journalEntries.put(myId,myEntry);
+    }
 }
 
-
+*/
