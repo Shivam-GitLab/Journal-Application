@@ -48,7 +48,6 @@ public class JournalEntryController {
     @PathVariable Long myId
 */
 
-
     @GetMapping("id/{myId}")
     public JournalEntry getJournalEntryById(@PathVariable ObjectId myId){
         return journalEntryService.getById(myId).orElse(null);
@@ -64,8 +63,6 @@ public class JournalEntryController {
     Ensures the data is structured and follows JSON format conventions.
 
     Helps in accurate data transmission and reception between client & server.*//*
-
-
  */
 /*
     ✅ About @RequestBody JournalEntry myEntry (not code):
