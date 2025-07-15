@@ -1,12 +1,16 @@
 package com.sm.journalApp.controllers;
+
 import com.sm.journalApp.entities.JournalEntry;
 import com.sm.journalApp.services.JournalEntryService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 
 /*
@@ -47,11 +51,25 @@ public class JournalEntryController {
     3. Used to make REST ful endpoints cleaner and meaningful
     @PathVariable Long myId
 */
-
     @GetMapping("id/{myId}")
+    public ResponseEntity<JournalEntry> getJournalEntryById(@PathVariable ObjectId myId){
+        Optional<JournalEntry> journalEntry = journalEntryService.getById(myId);
+/*
+         if (journalEntry.isPresent()){
+            return new ResponseEntity<>(journalEntry.get(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+*/
+
+        return journalEntry.map(entry ->
+                new ResponseEntity<>(entry, HttpStatus.OK)).orElseGet(() ->
+                new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+/*    @GetMapping("id/{myId}")
     public JournalEntry getJournalEntryById(@PathVariable ObjectId myId){
         return journalEntryService.getById(myId).orElse(null);
-    }
+    }*/
 
 /*
     ✅ Here’s your statement converted into clear key points:
@@ -80,19 +98,42 @@ public class JournalEntryController {
 
 
     @PostMapping("/create-post")
+    public ResponseEntity<JournalEntry> createEntry(@RequestBody JournalEntry myEntry){
+        try {
+            myEntry.setDate(LocalDateTime.now());
+            journalEntryService.saveEntry(myEntry);
+            return new ResponseEntity<>(myEntry, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+    /*    @PostMapping("/create-post")
     public JournalEntry createEntry(@RequestBody JournalEntry myEntry){
         myEntry.setDate(LocalDateTime.now());
         journalEntryService.saveEntry(myEntry);
         return myEntry;
-    }
+    }*/
 
+    
+    @DeleteMapping("id/{myId}")
+    public ResponseEntity<?> deleteJournalEntryById(@PathVariable ObjectId myId){
+/*        journalEntryService.deleteById(myId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);*/
+        if (journalEntryService.getById(myId).isPresent()) {
+            journalEntryService.deleteById(myId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+/*    
     @DeleteMapping("id/{myId}")
     public boolean deleteJournalEntryById(@PathVariable ObjectId myId){
         journalEntryService.deleteById(myId);
         return true;
-    }
+    }*/
 
-    @PutMapping("id/{myId}")
+/*    @PutMapping("id/{myId}")
     public JournalEntry updateJournalEntryById(
             @PathVariable ObjectId myId,
             @RequestBody JournalEntry newEntry){
@@ -103,6 +144,21 @@ public class JournalEntryController {
             journalEntryService.saveEntry(oldEntry); // persist the updated entity
         }
         return oldEntry;
+    }*/
+
+
+    @PutMapping("id/{myId}")
+    public ResponseEntity<JournalEntry> updateJournalEntryById(
+            @PathVariable ObjectId myId,
+            @RequestBody JournalEntry newEntry){
+        JournalEntry oldEntry = journalEntryService.getById(myId).orElse(null);
+        if (oldEntry != null){
+            oldEntry.setTitle(newEntry.getTitle() != null && !newEntry.getTitle().isEmpty() ? newEntry.getTitle() : oldEntry.getTitle());
+            oldEntry.setContent(newEntry.getContent() != null && !newEntry.getContent().isEmpty() ? newEntry.getContent() : oldEntry.getContent());
+            journalEntryService.saveEntry(oldEntry); // persist the updated entity
+            return  new ResponseEntity<>(oldEntry, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }
 
