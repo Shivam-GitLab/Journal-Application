@@ -1,11 +1,11 @@
 package com.sm.journalApp.entities;
 
 import lombok.Data;
+import lombok.NonNull;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
 
 
@@ -27,6 +27,7 @@ public class JournalEntry {
        // marks this field as the primary key (unique identifier) in MongoDB
 //    private String id;
     private ObjectId id;
+    @NonNull
     private String title;
     private String content;
     private LocalDateTime date;
