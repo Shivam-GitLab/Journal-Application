@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 @Data // @Setter + @Setter + toString more
 // @Document // MongoDB document for journal entries with id, title, content fields
 @Document(collection = "journal_Entries")
+//@NoArgsConstructor
 public class JournalEntry {
     @Id // Map => Primary Key
        // marks this field as the primary key (unique identifier) in MongoDB

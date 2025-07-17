@@ -1,6 +1,7 @@
 package com.sm.journalApp.services;
 //Controller -> Service -> Repository -> Database
 import com.sm.journalApp.entities.JournalEntry;
+import com.sm.journalApp.entities.User;
 import com.sm.journalApp.repositories.JournalEntryRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,14 @@ Managed by IoC container:
  */
     @Autowired
     private JournalEntryRepository journalEntryRepository;
+    @Autowired
+    private UserService userService;
+    public void saveEntry(JournalEntry journalEntry, String userName){
+        User user = userService.findByUserName(userName);
+        JournalEntry saved = journalEntryRepository.save(journalEntry);
+        user.getJournalEntries().add(saved);
+        userService.saveUser(user);
+    }
     public void saveEntry(JournalEntry journalEntry){
         journalEntryRepository.save(journalEntry);
     }
@@ -43,7 +52,10 @@ Managed by IoC container:
         return  journalEntryRepository.findById(myId);
     }
 
-    public void deleteById(ObjectId myId){
+    public void deleteById(ObjectId myId, String userName){
+        User user = userService.findByUserName(userName);
+        user.getJournalEntries().removeIf(x -> x.getId().equals(myId));
+        userService.saveUser(user);
         journalEntryRepository.deleteById(myId);
     }
 
