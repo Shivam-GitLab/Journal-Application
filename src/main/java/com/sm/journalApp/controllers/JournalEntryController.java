@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-
 /*
 ✅ @RestController
 
@@ -109,7 +108,6 @@ public class JournalEntryController {
     @PostMapping("/create-post/{userName}")
     public ResponseEntity<JournalEntry> createEntry(@RequestBody JournalEntry myEntry, @PathVariable String userName){
         try {
-
             myEntry.setDate(LocalDateTime.now());
             journalEntryService.saveEntry(myEntry,userName);
             return new ResponseEntity<>(myEntry, HttpStatus.CREATED);
