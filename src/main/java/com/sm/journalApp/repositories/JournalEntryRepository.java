@@ -8,5 +8,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository // Optional, but a good practice
 public interface JournalEntryRepository extends MongoRepository<JournalEntry, ObjectId> {
-
 }
