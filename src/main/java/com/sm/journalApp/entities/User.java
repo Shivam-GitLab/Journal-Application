@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Document(collection = "users")
@@ -26,3 +27,4 @@ public class User {
     @DBRef
     private List<JournalEntry> journalEntries = new ArrayList<>();
 }
+  

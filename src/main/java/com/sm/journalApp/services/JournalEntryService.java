@@ -50,6 +50,7 @@ public class JournalEntryService {
 
     public void deleteById(ObjectId myId, String userName){
         User user = userService.findByUserName(userName);
+//        User user2 = userService.findByUserId(myId);
         user.getJournalEntries().removeIf(x -> x.getId().equals(myId));
         userService.saveUser(user);
         journalEntryRepository.deleteById(myId);

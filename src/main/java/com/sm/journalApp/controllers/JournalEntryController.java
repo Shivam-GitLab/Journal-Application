@@ -51,6 +51,21 @@ public class JournalEntryController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+    @PostMapping("/create-post-multiple/{userName}")
+    public ResponseEntity<List<JournalEntry>> createMultipleEntries(
+            @RequestBody List<JournalEntry> entries,
+            @PathVariable String userName) {
+        try {
+            // Set date for each entry and save
+            for (JournalEntry entry : entries) {
+                entry.setDate(LocalDateTime.now());
+                journalEntryService.saveEntry(entry, userName);
+            }
+            return new ResponseEntity<>(entries, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 
 
     @DeleteMapping("id/{userName}/{myId}")
