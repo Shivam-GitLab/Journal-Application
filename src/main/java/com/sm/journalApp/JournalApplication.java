@@ -5,8 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 //@EnableTransactionManagement
-public class JournalApplication {
-	public static void main(String[] args) {
+public class JournalApplication {	public static void main(String[] args) {
         SpringApplication.run(JournalApplication.class, args);
 	}
 

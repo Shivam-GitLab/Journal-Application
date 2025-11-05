@@ -22,12 +22,10 @@ public class UserService {
     public List<User> getAll(){
         return userRepository.findAll();
     }
-
     public Optional<User> getById(ObjectId myId){
 
         return  userRepository.findById(myId);
     }
-
     public void deleteById(ObjectId myId){
 
         userRepository.deleteById(myId);
